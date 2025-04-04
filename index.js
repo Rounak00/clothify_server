@@ -4,6 +4,13 @@ const errorHandler = require('./middleware/errorHandler');
 const connection = require('./utils/connection');
 const PORT=require('./config').PORT;
 const userRoutes = require('./routes/userRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const checkoutRoutes = require('./routes/checkoutRoutes');
+const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
+const subscriberRoutes = require('./routes/subscriberRoute');
+const adminRoutes = require('./routes/adminRoutes');
 const app = express();
 
 
@@ -25,6 +32,13 @@ app.get('/api/clothify', (req, res, next) => {
     }
 })
 app.use('/api/user', userRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use("/api/checkout", checkoutRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/api/subscribe", subscriberRoutes);
+app.use("/api/admin", adminRoutes);
 app.use((req, res, next) => {
     res.status(404).json({
         success: false,

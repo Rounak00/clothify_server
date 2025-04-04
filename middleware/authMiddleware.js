@@ -26,4 +26,12 @@ const verifyToken = async (req, res, next) => {
     );
   }
 };
-module.exports = {verifyToken};
+
+const isAdmin = async(req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    return next(CustomErrorHandler.unAuthorized("Not authorized as an admin"));
+  }
+}
+module.exports = {verifyToken,isAdmin};

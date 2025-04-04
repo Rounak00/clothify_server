@@ -52,7 +52,7 @@ router.post('/login', async (req, res, next) => {
 
 router.get('/profile', verifyToken, async(req, res, next) => {
      try{
-      const user=await User.findById(req.user.id).select('-password');
+     res.status(200).json({ success: true,  data:req.user });
      }catch(err){
         next(err);
      }
