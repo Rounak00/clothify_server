@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const  CustomErrorHandler  = require('../services/customErrorHandler');
 const {verifyToken} = require('../middleware/authMiddleware');
+const redis_client = require('../utils/redisConnect');
 const JWT_SECRET = require('../config').JWT_SECRET;
 
 
@@ -21,7 +22,7 @@ router.post('/register', async (req, res, next) => {
         const payload = {user : {id: user._id, role: user.role}};
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
         const { password: _, ...data } = user._doc;
-    
+        await redis_client.set(token, JSON.stringify(data), 'EX', 180);
         res.status(201).json({ success: true, message: 'User registered successfully', token, data });
         
     } catch (error) {
@@ -43,8 +44,8 @@ router.post('/login', async (req, res, next) => {
         const payload = {user : {id: user._id, role: user.role}};
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
         const { password: _, ...data } = user._doc;
-    
-        res.status(200).json({ success: true, message: 'User registered successfully', token, data });
+        await redis_client.set(token, JSON.stringify(data), 'EX', 180);
+        res.status(200).json({ success: true, message: 'User logedin successfully', token, data });
     }catch(err){
         next(err);
     }

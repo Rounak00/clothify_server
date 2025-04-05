@@ -11,6 +11,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const subscriberRoutes = require('./routes/subscriberRoute');
 const adminRoutes = require('./routes/adminRoutes');
+const redis_client = require('./utils/redisConnect');
 const app = express();
 
 
@@ -50,4 +51,5 @@ app.use(errorHandler);
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
   await connection();
+  await redis_client;
 });
