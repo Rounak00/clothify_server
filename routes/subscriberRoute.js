@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Subscriber = require('../models/Subscriber');
+const { subscriptionSchema } = require('../validators');
 
 router.post('/', async (req, res, next) => {
     const { email } = req.body;
     try {
+        await subscriptionSchema.validateAsync(req.body);
         let subscriber = await Subscriber.findOne({ email });
         if (subscriber) {
             return res.status(400).json({

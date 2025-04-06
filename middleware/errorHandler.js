@@ -1,14 +1,13 @@
 const CustomErrorHandler = require("../services/customErrorHandler");
-// const validationError = require("joi").ValidationError;
+const validationError = require("joi").ValidationError;
  function errorHandler(err, req, res, next) {
-    const errorStatus = err.status || 500;
-    const errorMessage = err.message || "Internal Server Error";
+    let errorStatus = err.status || 500;
+    let errorMessage = err.message || "Internal Server Error";
 
-    // if (err instanceof ValidationError) {
-    //     statusCode = 422;
-    //     errorMessage= err.message;
-       
-    // }
+    if (err.isJoi) {
+        errorStatus = 422;
+        errorMessage = err.details?.[0]?.message || err.message;
+    }
 
     // if (err instanceof CustomErrorHandler) {
     //     statusCode = err.status;

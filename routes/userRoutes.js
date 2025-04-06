@@ -6,10 +6,12 @@ const  CustomErrorHandler  = require('../services/customErrorHandler');
 const {verifyToken} = require('../middleware/authMiddleware');
 const redis_client = require('../utils/redisConnect');
 const JWT_SECRET = require('../config').JWT_SECRET;
+const {loginSchema, registerSchema}=require('../validators');
 
 
 router.post('/register', async (req, res, next) => {
     try {
+        await registerSchema.validateAsync(req.body);
         const { name, email, password } = req.body;
         let user= await User.findOne({ email });
         if (user) {
@@ -33,6 +35,7 @@ router.post('/register', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
     const {email,password}=req.body;
     try{
+        await loginSchema.validateAsync(req.body);
         let user= await User.findOne({email});
         if(!user){
             return next(CustomErrorHandler.wrongCredentials());
