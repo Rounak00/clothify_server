@@ -46,6 +46,43 @@ router.post('/',  upload.single('image'), async(req, res,next) => {
     }
 })
 
+router.delete('/cloudinary-delete', verifyToken, isAdmin, async (req, res, next) => {
+    try {
+      const { imageUrl } = req.body;
+  
+      if (!imageUrl) {
+        return res.status(400).json({
+          success: false,
+          message: 'Image URL is required',
+        });
+      }
+  
+      // Extract public ID from URL
+      const parts = imageUrl.split('/');
+      const fileName = parts[parts.length - 1].split('.')[0]; // without extension
+      const folderName = parts[parts.length - 2]; // "Clothify"
+      const publicId = `${folderName}/${fileName}`;
+  
+      const result = await cloudinary.uploader.destroy(publicId);
+  
+      if (result.result !== 'ok') {
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to delete image from Cloudinary',
+          result,
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        message: 'Image deleted successfully',
+        result,
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
 
  
 module.exports = router;

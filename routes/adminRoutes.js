@@ -78,6 +78,7 @@ router.delete("/delete-user/:id", verifyToken, isAdmin, async (req, res, next) =
         return res.status(200).json({
             success:true,
             message:"User deleted successfully",
+            _id:id,
         });
     }catch(err){
         next(err);
@@ -112,7 +113,7 @@ router.get("/all-orders", verifyToken, isAdmin, async (req, res, next) => {
 
 router.put("/update-order-status/:id", verifyToken, isAdmin, async (req, res, next) => {
     try{
-        const order=await Order.findById(req.params.id);
+        const order=await Order.findById(req.params.id).populate("user", "name email");
         if(!order){
             return res.status(404).json({
                 success:false,
@@ -147,6 +148,7 @@ router.delete("/delete-order/:id", verifyToken, isAdmin, async (req, res, next) 
         return res.status(200).json({
             success:true,
             message:"Order deleted successfully",
+            _id:id,
         });
     }catch(err){
         next(err);

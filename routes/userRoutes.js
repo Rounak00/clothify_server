@@ -20,7 +20,7 @@ router.post('/register', async (req, res, next) => {
         await user.save();
 
         const payload = {user : {id: user._id, role: user.role}};
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(payload, JWT_SECRET);
         const { password: _, ...data } = user._doc;
         await redis_client.set(token, JSON.stringify(data), 'EX', 180);
         res.status(201).json({ success: true, message: 'User registered successfully', token, data });
@@ -42,7 +42,7 @@ router.post('/login', async (req, res, next) => {
             return next(CustomErrorHandler.wrongCredentials());
         }
         const payload = {user : {id: user._id, role: user.role}};
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(payload, JWT_SECRET);
         const { password: _, ...data } = user._doc;
         await redis_client.set(token, JSON.stringify(data), 'EX', 180);
         res.status(200).json({ success: true, message: 'User logedin successfully', token, data });

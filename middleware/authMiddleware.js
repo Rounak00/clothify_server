@@ -21,7 +21,6 @@ const verifyToken = async (req, res, next) => {
     const redis_exists = await redis_client.exists(token);
     if(redis_exists){
         const redis_data = await redis_client.get(token);
-        console.log("Working from redis", JSON.parse(redis_data))
         req.user = JSON.parse(redis_data);
         return next();
     }
