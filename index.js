@@ -12,11 +12,15 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const subscriberRoutes = require('./routes/subscriberRoute');
 const adminRoutes = require('./routes/adminRoutes');
 const redis_client = require('./utils/redisConnect');
+const FRONTEND_URL=require('./config').FRONTEND_URL
 const app = express();
 
 
 app.use(express.json());
-app.use(cors()); 
+app.use(cors({
+    origin: FRONTEND_URL,
+    credentials: true,
+  }));
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/clothify', (req, res, next) => {
