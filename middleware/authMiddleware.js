@@ -18,13 +18,13 @@ const verifyToken = async (req, res, next) => {
     return next(CustomErrorHandler.unAuthorized("Not authorised, no token provieded"));
   }
   try {
+    const decoded = jwt.verify(token, JWT_SECRET);
     const redis_exists = await redis_client.exists(token);
     if(redis_exists){
         const redis_data = await redis_client.get(token);
         req.user = JSON.parse(redis_data);
         return next();
     }
-    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = await User.findById(decoded.user.id).select("-password");
     next();
   } catch (err) {
